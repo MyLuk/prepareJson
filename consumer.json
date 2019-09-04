@@ -1,0 +1,925 @@
+[
+  {
+    "nameRu": "Режим передачи файлов",
+    "descriptionEn": "Specifies the file transfer mode, BINARY or ASCII. Default is ASCII (false).",
+    "defaultValue": false,
+    "description": "Задает режим передачи файлов, BINARY или ASCII. По умолчанию ASCII (false).",
+    "nameEn": "binary",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Кодировка файла",
+    "descriptionEn": "This option is used to specify the encoding of the file. You can use this on the consumer, to specify the encodings of the files, which allow Camel to know the charset it should load the file content in case the file content is being accessed. Likewise when writing a file, you can use this option to specify which charset to write the file as well. Do mind that when writing the file Camel may have to read the message content into memory to be able to convert the data into the configured charset, so do not use this if you have big messages.",
+    "defaultValue": null,
+    "description": "Указывает кодировку обрабатываемых файлов",
+    "nameEn": "charset",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Отключиться",
+    "descriptionEn": "Whether or not to disconnect from remote FTP server right after use. Disconnect will only disconnect the current connection to the FTP server. If you have a consumer which you want to stop, then you need to stop the consumer\/route instead.",
+    "defaultValue": false,
+    "description": "Отключиться или нет от удаленного сервера FTP сразу после использования. Может использоваться как для потребителя, так и для продюсера. Настройка только отключит текущее подключение к FTP - серверу. Если у вас есть потребитель ,который вы хотите остановить, тогда следует остановить маршрут",
+    "nameEn": "disconnect",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Имя готового файла",
+    "descriptionEn": "Producer: If provided, then Camel will write a 2nd done file when the original file has been written. The done file will be empty. This option configures what file name to use. Either you can specify a fixed name. Or you can use dynamic placeholders. The done file will always be written in the same folder as the original file. Consumer: If provided, Camel will only consume files if a done file exists. This option configures what file name to use. Either you can specify a fixed name. Or you can use dynamic placeholders.The done file is always expected in the same folder as the original file. Only \\${file.name} and \\${file.name.noext} is supported as dynamic placeholders.",
+    "defaultValue": null,
+    "description": "Брокер будет потреблять файлы, если готовый файл существует. После обработки готовый файл удаляется, если не активирован параметр noop. Может использоваться либо фиксированное имя, либо динамические заполнители. Например, если значение параметра done, то файлы будут обрабатываться, только если в текущей директории появится файл с именем done. Однако, более распространено иметь один готовый файл на целевой файл для этого вы должны использовать динамические заполнители в этом параметре. Поддерживаются следующие два динамических токена: file:name и file:name.noext, которые должны быть заключены в ${}. Точка входа поддерживает только статическую часть имени готового файла как префикс или суффикс (но не оба). Например, при значении ${file:name}.done файл hello.txt будет обработан, только если присутствует файл hello.txt.done",
+    "nameEn": "doneFileName",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Имя файла",
+    "descriptionEn": "Use Expression such as File Language to dynamically set the filename. For consumers, it\u2019s used as a filename filter. For producers, it\u2019s used to evaluate the filename to write. If an expression is set, it take precedence over the CamelFileName header. (Note: The header itself can also be an Expression). The expression options support both String and Expression types. If the expression is a String type, it is always evaluated using the File Language. If the expression is an Expression type, the specified Expression type is used - this allows you, for instance, to use OGNL expressions. For the consumer, you can use it to filter filenames, so you can for instance consume today\u2019s file using the File Language syntax: mydata-\\${date:now:yyyyMMdd}.txt. The producers support the CamelOverruleFileName header which takes precedence over any existing CamelFileName header; the CamelOverruleFileName is a header that is used only once, and makes it easier as this avoids to temporary store CamelFileName and have to restore it afterwards.",
+    "defaultValue": null,
+    "description": "Фильтровать файлы по динамическому значению с использованием файлового языка, например, вы можете потреблять файлы созданные сегодня, используя следующий синтаксис: mydata-${date:now:yyyyMMdd}.txt",
+    "nameEn": "fileName",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Пассивный режим соединения",
+    "descriptionEn": "Sets passive mode connections. Default is active mode connections.",
+    "defaultValue": false,
+    "description": "Указывает, следует ли использовать пассивный режим соединения. По умолчанию active mode (false).",
+    "nameEn": "passiveMode",
+    "type": "BOOL"
+  },
+  {
+    "acceptableValues": [
+      {
+        "label": "AUTO",
+        "value": "AUTO"
+      },
+      {
+        "label": "UNIX",
+        "value": "UNIX"
+      },
+      {
+        "label": "Windows",
+        "value": "Windows"
+      }
+    ],
+    "nameRu": "Разделитель пути",
+    "descriptionEn": "Sets the path separator to be used. UNIX = Uses unix style path separator Windows = Uses windows style path separator Auto = (is default) Use existing path separator in file name",
+    "defaultValue": "UNIX",
+    "description": "Определяет, какой разделитель пути, используется при загрузке файлов. Auto = оставляет предоставленный разделитель пути без изменений. UNIX = Использование разделителей UNIX. Windows = Использование разделителей Windows.",
+    "nameEn": "separator",
+    "type": "SELECT"
+  },
+  {
+    "nameRu": "Интервал при регистрации хода операций загрузки и выгрузки",
+    "descriptionEn": "Configures the interval in seconds to use when logging the progress of upload and download operations that are in-flight. This is used for logging progress when operations takes longer time.",
+    "defaultValue": "5",
+    "description": "Настраивает интервал в секундах для использования при регистрации хода операций загрузки и выгрузки, выполняемых в полете. Это используется для регистрации прогресса, когда операции занимают больше времени.",
+    "nameEn": "transferLoggingIntervalSeconds",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Уровень ведения журнала операций загрузки и выгрузки",
+    "descriptionEn": "Configure the logging level to use when logging the progress of upload and download operations.",
+    "defaultValue": "DEBUG",
+    "description": "Настройте уровень ведения журнала, который будет использоваться при ведении журнала операций загрузки и выгрузки",
+    "nameEn": "transferLoggingLevel",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Подробное ведение журнала операций загрузки и выгрузки",
+    "descriptionEn": "Configures whether the perform verbose (fine grained) logging of the progress of upload and download operations.",
+    "defaultValue": false,
+    "description": "Настраивает, выполнять ли подробное (детальное) ведение журнала хода выполнения операций загрузки и выгрузки",
+    "nameEn": "transferLoggingVerbose",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Проверка существования файла",
+    "descriptionEn": "If set this option to be true, camel-\\ftp will use the list file directly to check if the file exists. Since some FTP server may not support to list the file directly, if the option is false, camel-\\ftp will use the old way to list the directory and check if the file exists. This option also influences readLock=changed to control whether it performs a fast check to update file information or not. This can be used to speed up the process if the FTP server has a lot of files.",
+    "defaultValue": false,
+    "description": "Если установлен этот параметр в true, Брокер-FTP будет использовать файл список непосредственно, чтобы проверить, существует ли файл. Поскольку некоторые FTP - серверы не поддерживают прямую проверку, если опция ложна, Брокер-FTP будет использовать старый способ перечислить каталоги и проверить, существует ли файл. Этот параметр также влияет на управление readLock=changed. Это может быть использовано для ускорения процесса , если сервер FTP имеет много файлов.",
+    "nameEn": "fastExistsCheck",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Соединить потребителя с обработчиком ошибок",
+    "descriptionEn": "Allows for bridging the consumer to the Camel routing Error Handler, which mean any exceptions occurred while the consumer is trying to pickup incoming messages, or the likes, will now be processed as a message and handled by the routing Error Handler. By default the consumer will use the org.apache.camel.spi.ExceptionHandler to deal with exceptions, that will be logged at WARN or ERROR level and ignored.",
+    "defaultValue": false,
+    "description": "Позволяет соединить потребителя с обработчиком ошибок маршрутизации, что означает, что любые исключения, возникшие при попытке потребителя принять входящие сообщения или тому подобное, теперь будут обрабатываться как сообщения и обрабатываться обработчиком ошибок маршрутизации. По умолчанию потребитель будет использовать org.apache.camel.spi.ExceptionHandler для обработки исключений, которые будут регистрироваться на уровне WARN или ERROR и игнорироваться.",
+    "nameEn": "bridgeErrorHandler",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Удалить файл",
+    "descriptionEn": "If true, the file will be deleted after it is processed successfully.",
+    "defaultValue": false,
+    "description": "Удалять файлы после успешной обработки",
+    "nameEn": "delete",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Имя директории\/файла при ошибке",
+    "descriptionEn": "Sets the move failure expression based on Simple language. For example, to move files into a .error subdirectory use: .error. Note: When moving the files to the fail location Camel will handle the error and will not pick up the file again.",
+    "defaultValue": null,
+    "description": "Строка или выражение файлового или простого языка, используется для динамической установки имени файла при его перемещении при ошибке его обработкия. Например, при значении параметра temp файлы будут перемещены в директорию temp со своими именами, при значении temp\/${id} перемещены в temp и названы как их id, при temp\/${id}\/${file:name} каждый файл под своим именем будет перемещен в отдельную директорию под названием его id внутри директории temp",
+    "nameEn": "moveFailed",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Только чтение",
+    "descriptionEn": "If true, the file is not moved or deleted in any way. This option is good for readonly data, or for ETL type requirements. If noop=true, Camel will set idempotent=true as well, to avoid consuming the same files over and over again.",
+    "defaultValue": false,
+    "description": "Не перемещать и не удалять файлы. По умолчанию файлы перемещаются в директорию .camel",
+    "nameEn": "noop",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Имя директории\/файла в процессе обработки",
+    "descriptionEn": "Expression (such as File Language) used to dynamically set the filename when moving it before processing. For example to move in-progress files into the order directory set this value to order.",
+    "defaultValue": null,
+    "description": "Строка или выражение файлового или простого языка, используется для динамической установки имени директории\/файла при его обработке. Например, при значении параметра temp файлы будут перемещены в директорию temp со своими именами, при значении temp\/${id} перемещены в temp и названы как их id, при temp\/${id}\/${file:name} каждый файл под своим именем будет перемещен в отдельную директорию под названием его id внутри директории temp",
+    "nameEn": "preMove",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Предварительная сортировка",
+    "descriptionEn": "When pre-sort is enabled then the consumer will sort the file and directory names during polling, that was retrieved from the file system. You may want to do this in case you need to operate on the files in a sorted order. The pre-sort is executed before the consumer starts to filter, and accept files to process by Camel. This option is default=false meaning disabled.",
+    "defaultValue": false,
+    "description": "Если включена предварительная сортировка, то потребитель будет сортировать имена файлов и каталогов во время опроса, которые были получены из файловой системы. Вы можете сделать это в случае, если вам нужно работать с файлами в отсортированном порядке. Предварительная сортировка выполняется до того, как потребитель начнет фильтровать и принимать файлы для обработки",
+    "nameEn": "preSort",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Рекурсивность",
+    "descriptionEn": "If a directory, will look for files in all the sub-directories as well.",
+    "defaultValue": false,
+    "description": "Искать файлы во вложенных директориях",
+    "nameEn": "recursive",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Включить возобновляемую загрузку",
+    "descriptionEn": "Configures whether resume download is enabled. This must be supported by the FTP server (almost all FTP servers support it). In addition the options localWorkDirectory must be configured so downloaded files are stored in a local directory, and the option binary must be enabled, which is required to support resuming of downloads.",
+    "defaultValue": false,
+    "description": "Настраивает, включена ли возобновляемая загрузка. Это должно поддерживаться FTP-сервером (это поддерживают почти все FTP-серверы). Кроме того, параметры localWorkDirectory должны быть настроены таким образом, чтобы загруженные файлы сохранялись в локальном каталоге, а двоичный параметр должен быть включен, что необходимо для поддержки возобновления загрузок.",
+    "nameEn": "resumeDownload",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Отправлять пустые сообщения в состоянии простоя",
+    "descriptionEn": "If the polling consumer did not poll any files, you can enable this option to send an empty message (no body) instead.",
+    "defaultValue": false,
+    "description": "Отправлять пустые сообщения в состоянии простоя",
+    "nameEn": "sendEmptyMessageWhenIdle",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Потоковая Загрузка",
+    "descriptionEn": "Sets the download method to use when not using a local working directory. If set to true, the remote files are streamed to the route as they are read. When set to false, the remote files are loaded into memory before being sent into the route.",
+    "defaultValue": false,
+    "description": "Должен ли FTP потребитель загружать файл целиком (поведение по умолчанию) или частично, используя потоковую загрузку. Эта опция игнорируется, если опция «Загрузить файл» false или используется опция «Локальный рабочий каталог»",
+    "nameEn": "streamDownload",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Загрузить файл",
+    "descriptionEn": "Whether the FTP consumer should download the file. If this option is set to false, then the message body will be null, but the consumer will still trigger a Camel Exchange that has details about the file such as file name, file size, etc. It\u2019s just that the file will not be downloaded.",
+    "defaultValue": true,
+    "description": "Должен ли FTP потребитель загрузить файл. Если этот параметр установлен false, то тело сообщения будет null, но потребитель все равно будет вызывать Exchange, который содержит информацию о файле , например, имя файла, размер файла и т.д..",
+    "nameEn": "download",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Обработчик исключений",
+    "descriptionEn": "To let the consumer use a custom ExceptionHandler. Notice if the option bridgeErrorHandler is enabled then this option is not in use. By default the consumer will deal with exceptions, that will be logged at WARN or ERROR level and ignored.",
+    "defaultValue": null,
+    "description": "Позволить потребителю использовать пользовательский ExceptionHandler. Обратите внимание, что если опция bridgeErrorHandler включена, то эта опция не используется. По умолчанию потребитель будет иметь дело с исключениями, которые будут регистрироваться на уровне WARN или ERROR и игнорироваться",
+    "nameEn": "exceptionHandler",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Модель обмена",
+    "descriptionEn": "Sets the exchange pattern when the consumer creates an exchange.",
+    "defaultValue": null,
+    "description": "Устанавливает модель обмена, когда потребитель создает обмен",
+    "nameEn": "exchangePattern",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Как обрабатывать файлы в пути, если парсер каталогов приводит к абсолютным путям",
+    "descriptionEn": "Allows you to set how the consumer will handle subfolders and files in the path if the directory parser results in with absolute paths The reason for this is that some FTP servers may return file names with absolute paths, and if so then the FTP component needs to handle this by converting the returned path into a relative path.",
+    "defaultValue": false,
+    "description": "Позволяет вам установить, как потребитель будет обрабатывать подпапки и файлы в пути, если парсер каталогов приводит к абсолютным путям. Причина в том, что некоторые FTP-серверы могут возвращать имена файлов с абсолютными путями, и если это так, то компонент FTP должен справиться с этим путем преобразования возвращенного пути в относительный путь.",
+    "nameEn": "handleDirectoryParserAbsoluteResult",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Игнорировать не найденный файл или ошибки доступа",
+    "descriptionEn": "Whether to ignore when (trying to list files in directories or when downloading a file), which does not exist or due to permission error. By default when a directory or file does not exists or insufficient permission, then an exception is thrown. Setting this option to true allows to ignore that instead.",
+    "defaultValue": false,
+    "description": "Указывает должен ли потребитель игнорировать ошибки,когда пытается получить файл, который не существует (по каким-то причинам), или ошибки разрешения доступа. Также эта опция работает и с  каталогами.",
+    "nameEn": "ignoreFileNotFoundOrPermissionError",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Подключаемое текущее хранилище",
+    "descriptionEn": "A pluggable in-progress repository org.apache.camel.spi.IdempotentRepository. The in-progress repository is used to account the current in progress files being consumed. By default a memory based repository is used.",
+    "defaultValue": null,
+    "description": "Подключаемое текущее хранилище org.apache.camel.spi.IdempotentRepository. Текущий репозиторий используется для учета текущих текущих файлов, которые используются. По умолчанию используется хранилище на основе памяти",
+    "nameEn": "inProgressRepository",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Локальный рабочий каталог",
+    "descriptionEn": "When consuming, a local work directory can be used to store the remote file content directly in local files, to avoid loading the content into memory. This is beneficial, if you consume a very big remote file and thus can conserve memory.",
+    "defaultValue": null,
+    "description": "При потреблении, локальный рабочий каталог используется для хранения содержимого удаленного файла непосредственно в локальных файлах, чтобы избежать загрузки содержимого в память. Это полезно, если вы потребляете очень большой удаленный файл. Если имя директории указывается без косой черты (например: directoryName), то она будет создана (если отсутствует) в домашней директории Factor ESB, иначе по указанному пути в файловой системе",
+    "nameEn": "localWorkDirectory",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Использовать пользовательский обработчик исключений",
+    "descriptionEn": "To use a custom org.apache.camel.spi.ExceptionHandler to handle any thrown exceptions that happens during the file on completion process where the consumer does either a commit or rollback. The default implementation will log any exception at WARN level and ignore.",
+    "defaultValue": null,
+    "description": "Использовать пользовательский org.apache.camel.spi.ExceptionHandler для обработки любых сгенерированных исключений, возникающих во время процесса завершения файла, когда потребитель выполняет коммит или откат. Реализация по умолчанию будет регистрировать любое исключение на уровне WARN и игнорировать",
+    "nameEn": "onCompletionExceptionHandler",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Стратегия опроса",
+    "descriptionEn": "A pluggable org.apache.camel.PollingConsumerPollingStrategy allowing you to provide your custom implementation to control error handling usually occurred during the poll operation before an Exchange have been created and being routed in Camel.",
+    "defaultValue": null,
+    "description": "Подключаемый модуль org.apache.camel.PollingConsumerPollingStrategy, позволяющий предоставить пользовательскую реализацию для управления обработкой ошибок, которая обычно возникала во время операции опроса до создания Exchange и его маршрутизации в брокер",
+    "nameEn": "pollStrategy",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Подключаемый модуль, позволяющий реализовать собственный параметр readLock",
+    "descriptionEn": "A pluggable org.apache.camel.component.file.GenericFileProcessStrategy allowing you to implement your own readLock option or similar. Can also be used when special conditions must be met before a file can be consumed, such as a special ready file exists. If this option is set then the readLock option does not apply.",
+    "defaultValue": null,
+    "description": "Подключаемый модуль org.apache.camel.component.file.GenericFileProcessStrategy, позволяющий реализовать собственный параметр readLock или аналогичный. Может также использоваться, когда перед использованием файла должны выполняться особые условия, например, существует специальный готовый файл. Если этот параметр установлен, то параметр readLock не применяется",
+    "nameEn": "processStrategy",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Размер приемного буфера",
+    "descriptionEn": "The receive (download) buffer size Used only by FTPClient",
+    "defaultValue": 32768,
+    "description": "Размер буфера для загрузки файлов. Размер по умолчанию 32кб.",
+    "nameEn": "receiveBufferSize",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Использовать команду LIST",
+    "descriptionEn": "Whether to allow using LIST command when downloading a file. Default is true. In some use cases you may want to download a specific file and are not allowed to use the LIST command, and therefore you can set this option to false. Notice when using this option, then the specific file to download does not include meta-data information such as file size, timestamp, permissions etc, because those information is only possible to retrieve when LIST command is in use.",
+    "defaultValue": true,
+    "description": "Разрешить ли использование команды LIST при загрузке файла. По умолчанию это правда. В некоторых случаях вы можете захотеть загрузить определенный файл, и вам не разрешено использовать команду LIST, и поэтому вы можете установить для этой опции значение false. Обратите внимание, что при использовании этой опции конкретный файл для загрузки не включает информацию метаданных, такую как размер файла, временную метку, разрешения и т. Д., Поскольку эту информацию можно получить только при использовании команды LIST",
+    "nameEn": "useList",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Диапазон портов в активном режиме",
+    "descriptionEn": "Set the client side port range in active mode. The syntax is: minPort-maxPort Both port numbers are inclusive, eg 10000-19999 to include all 1xxxx ports.",
+    "defaultValue": null,
+    "description": "Установите диапазон портов на клиентской стороне в активный режиме. Синтаксис: minPort - maxPort. Например , 10000-19999 , чтобы включить весь диапазон, т.е 1xxxx портов.",
+    "nameEn": "activePortRange",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Автоматическое создание директорий",
+    "descriptionEn": "Automatically create missing directories in the file\u2019s pathname. For the file consumer, that means creating the starting directory. For the file producer, it means the directory the files should be written to.",
+    "defaultValue": true,
+    "description": "Автоматически создает недостающие каталоги в пути к файлу .Создает начальный каталог для потребителя файла. Для производителя файла, это означает каталог в который должны быть записаны файлы .",
+    "nameEn": "autoCreate",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Должна ли конечная точка использовать базовую привязку свойства",
+    "descriptionEn": "Whether the endpoint should use basic property binding (Camel 2.x) or the newer property binding with additional capabilities",
+    "defaultValue": false,
+    "description": "Должна ли конечная точка использовать базовую привязку свойства или более новую привязку свойства с дополнительными возможностями",
+    "nameEn": "basicPropertyBinding",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Размер буфера",
+    "descriptionEn": "Write buffer sized in bytes.",
+    "defaultValue": "128",
+    "description": "Буфер записи с заданным размером в байтах.",
+    "nameEn": "bufferSize",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Таймаут соединения",
+    "descriptionEn": "Sets the connect timeout for waiting for a connection to be established Used by both FTPClient and JSCH",
+    "defaultValue": 10000,
+    "description": "Таймаут соединения в Миллисекундах . Это соответствует использованию ftpClient.connectTimeout для FTP \/ FTPS. Для SFTP эта опция также используется при попытке подключения.",
+    "nameEn": "connectTimeout",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Пользовательский экземпляр FTPClient",
+    "descriptionEn": "To use a custom instance of FTPClient",
+    "defaultValue": null,
+    "description": "Чтобы использовать пользовательский экземпляр FTPClient",
+    "nameEn": "ftpClient",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Конфигурация Ftp клиента",
+    "descriptionEn": "To use a custom instance of FTPClientConfig to configure the FTP client the endpoint should use.",
+    "defaultValue": null,
+    "description": "Позволяет использовать клиент org.apache.commons.net.ftp.FTPClientConfig.",
+    "nameEn": "ftpClientConfig",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Параметров FTPClientConfig",
+    "descriptionEn": "Used by FtpComponent to provide additional parameters for the FTPClientConfig",
+    "defaultValue": null,
+    "description": "Используется FtpComponent для предоставления дополнительных параметров для FTPClientConfig",
+    "nameEn": "ftpClientConfigParameters",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Параметры FTPClient",
+    "descriptionEn": "Used by FtpComponent to provide additional parameters for the FTPClient",
+    "defaultValue": null,
+    "description": "Используется FtpComponent для предоставления дополнительных параметров для FTPClient",
+    "nameEn": "ftpClientParameters",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Максимальное кол-во попыток переподключений",
+    "descriptionEn": "Specifies the maximum reconnect attempts Camel performs when it tries to connect to the remote FTP server. Use 0 to disable this behavior.",
+    "defaultValue": 3,
+    "description": "Задает максимальное кол-во попыток переподключений которое Брокер произведет, пытаясь подключиться к удаленному серверу FTP. Используйте 0, чтобы отключить это поведение.",
+    "nameEn": "maximumReconnectAttempts",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Задержка переподключения",
+    "descriptionEn": "Delay in millis Camel will wait before performing a reconnect attempt.",
+    "defaultValue": 1000,
+    "description": "Задержка в Миллисекундах перед выполнением попытки повторного подключения.",
+    "nameEn": "reconnectDelay",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Команды сайта",
+    "descriptionEn": "Sets optional site command(s) to be executed after successful login. Multiple site commands can be separated using a new line character.",
+    "defaultValue": null,
+    "description": "Для выполнения команд сайта после успешного входа в систему. Несколько команд сайта могут быть разделены с помощью символа новой строки (\n). Используйте, help site чтобы увидеть, какие команды поддерживает ваш сервер FTP.",
+    "nameEn": "siteCommand",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Значение таймаута soTimeout",
+    "descriptionEn": "Sets the so timeout FTP and FTPS Only for Camel 2.4. SFTP for Camel 2.14.3\/2.15.3\/2.16 onwards. Is the SocketOptions.SO_TIMEOUT value in millis. Recommended option is to set this to 300000 so as not have a hanged connection. On SFTP this option is set as timeout on the JSCH Session instance.",
+    "defaultValue": 300000,
+    "description": "SocketOptions.SO_TIMEOUT Значение таймаута в Миллисекундах. Задается как, например, 300000 (5 минут), чтобы не повесить соединение. На SFTP этот параметр установлен в качестве тайм - аута на JSch сессии.",
+    "nameEn": "soTimeout",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Поэтапный просмотр",
+    "descriptionEn": "Sets whether we should stepwise change directories while traversing file structures when downloading files, or as well when uploading a file to a directory. You can disable this if you for example are in a situation where you cannot change directory on the FTP server due security reasons.",
+    "defaultValue": true,
+    "description": "Указывает следует использовать поэтапный просмотр каталогов или нет. Поэтапное означает , что  будет просматривать один каталог за раз. ",
+    "nameEn": "stepwise",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Использовать синхронную обработку",
+    "descriptionEn": "Sets whether synchronous processing should be strictly used, or Camel is allowed to use asynchronous processing (if supported).",
+    "defaultValue": false,
+    "description": "Устанавливает, должна ли строго использоваться синхронная обработка, или брокер может использовать асинхронную обработку (если поддерживается)",
+    "nameEn": "synchronous",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Выводить ошибку при не успешном соединении",
+    "descriptionEn": "Should an exception be thrown if connection failed (exhausted) By default exception is not thrown and a WARN is logged. You can use this to enable exception being thrown and handle the thrown exception from the org.apache.camel.spi.PollingConsumerPollStrategy rollback method.",
+    "defaultValue": false,
+    "description": "Указывает выводить ли ошибку в том ,случае если успешное соединение не может быть установлено. Это позволяет pollStrategy отработать с  исключением, например , чтобы остановить потребитель.",
+    "nameEn": "throwExceptionOnConnectFailed",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Таймаут",
+    "descriptionEn": "Sets the data timeout for waiting for reply Used only by FTPClient",
+    "defaultValue": "30000",
+    "description": "Устанавливает тайм-аут данных для ожидания ответа. Используется только FTPClient",
+    "nameEn": "timeout",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Регулярное выражение ANT для исключения файлов",
+    "descriptionEn": "Ant style filter exclusion. If both antInclude and antExclude are used, antExclude takes precedence over antInclude. Multiple exclusions may be specified in comma-delimited format.",
+    "defaultValue": null,
+    "description": "Регулярное выражение Ant, из обработки будут исключены файлы соответствующие этому шаблону. Значения можно указывать через запятую. Например, значение t?st.txt,*.pdf значит, что из обработки будут исключены все pdf файлы и файлы test.txt или tast.txt",
+    "nameEn": "antExclude",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Сделать регулярное выражение ANT чувствительным к регистру",
+    "descriptionEn": "Sets case sensitive flag on ant filter",
+    "defaultValue": true,
+    "description": "Сделать регулярное выражение ANT чувствительным к регистру.",
+    "nameEn": "antFilterCaseSensitive",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Регулярное выражение ANT для поиска файлов",
+    "descriptionEn": "Ant style filter inclusion. Multiple inclusions may be specified in comma-delimited format.",
+    "defaultValue": null,
+    "description": "Регулярное выражение Ant, будут обработаны только файлы соответствующие этому шаблону. Значения можно указывать через запятую. Например, значение t?st.txt,*.pdf значит, что будут обработаны все pdf файлы и файлы test.txt или tast.txt",
+    "nameEn": "antInclude",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Не выполнять полное сканирование перед опросом",
+    "descriptionEn": "Allows for controlling whether the limit from maxMessagesPerPoll is eager or not. If eager then the limit is during the scanning of files. Where as false would scan all files, and then perform sorting. Setting this option to false allows for sorting all files first, and then limit the poll. Mind that this requires a higher memory usage as all file details are in memory to perform the sorting.",
+    "defaultValue": true,
+    "description": "Установка этой опции false позволяет сортировать файлы, а затем ограничивать опрос. Имейте в виду, что это требует использования большего количества памяти, так как все детали файлов будут загружены в память, для выполнения сортировки.",
+    "nameEn": "eagerMaxMessagesPerPoll",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Регулярное выражение исключения файлов",
+    "descriptionEn": "Is used to exclude files, if filename matches the regex pattern (matching is case in-senstive). Notice if you use symbols such as plus sign and others you would need to configure this using the RAW() syntax if configuring this as an endpoint uri. See more details at configuring endpoint uris",
+    "defaultValue": null,
+    "description": "Строка или регулярное выражение, файлы соответствующие этой строке или регулярному выражению будут исключены из обработки, например, для  исключения из обработки файлов txt и pdf \".*.pdf|.*.txt\".",
+    "nameEn": "exclude",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Фильтр",
+    "descriptionEn": "Pluggable filter as a org.apache.camel.component.file.GenericFileFilter class. Will skip files if filter returns false in its accept() method.",
+    "defaultValue": null,
+    "description": "Сменный фильтр в виде класса org.apache.camel.component.file.GenericFileFilter. Будет пропускать файлы, если фильтр возвращает false в методе accept ().",
+    "nameEn": "filter",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Фильтр директорий",
+    "descriptionEn": "Filters the directory based on Simple language. For example to filter on current date, you can use a simple date pattern such as \\${date:now:yyyMMdd}",
+    "defaultValue": null,
+    "description": "Фильтрует директории. Например, для фильтрации по текущей дате, вы можете использовать простой шаблон даты, такой как  ${date:now:yyyMMdd}",
+    "nameEn": "filterDirectory",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Фильтр файлов",
+    "descriptionEn": "Filters the file based on Simple language. For example to filter on file size, you can use \\${file:size} 5000",
+    "defaultValue": null,
+    "description": "Фильтрует файлы. Например, чтобы фильтровать по размеру файла, вы можете использовать  ${file}:size > 5000",
+    "nameEn": "filterFile",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Пропуск уже обработанных файлов",
+    "descriptionEn": "Option to use the Idempotent Consumer EIP pattern to let Camel skip already processed files. Will by default use a memory based LRUCache that holds 1000 entries. If noop=true then idempotent will be enabled as well to avoid consuming the same files over and over again.",
+    "defaultValue": false,
+    "description": "Пропускать уже обработанные файлы, уникальный ключ файла - абсолютный путь к нему",
+    "nameEn": "idempotent",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Уникальный ключ уже обработанных файлов",
+    "descriptionEn": "To use a custom idempotent key. By default the absolute path of the file is used. You can use the File Language, for example to use the file name and file size, you can do: idempotentKey=\\${file:name}-\\${file:size}",
+    "defaultValue": "Expression",
+    "description": "По умолчанию используется абсолютный путь к файлу. Вы можете использовать имя файла и размер файла, например : ${file:name}-${file:size}",
+    "nameEn": "idempotentKey",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Подключаемый IdempotentRepository",
+    "descriptionEn": "A pluggable repository org.apache.camel.spi.IdempotentRepository which by default use MemoryMessageIdRepository if none is specified and idempotent is true.",
+    "defaultValue": null,
+    "description": "Подключаемый репозиторий org.apache.camel.spi.IdempotentRepository, который по умолчанию использует MemoryMessageIdRepository, если ни один не указан, а idempotent имеет значение true.",
+    "nameEn": "idempotentRepository",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Регулярное выражение поиска файлов",
+    "descriptionEn": "Is used to include files, if filename matches the regex pattern (matching is case in-sensitive). Notice if you use symbols such as plus sign and others you would need to configure this using the RAW() syntax if configuring this as an endpoint uri. See more details at configuring endpoint uris",
+    "defaultValue": null,
+    "description": "Строка или регулярное выражение, будут обработаны только файлы соответствующие этой строке или регулярному выражению, например, для обработки файлов txt и pdf \".*.pdf|.*.txt\".",
+    "nameEn": "include",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Максимальная глубина для обхода при рекурсивной обработке директории",
+    "descriptionEn": "The maximum depth to traverse when recursively processing a directory.",
+    "defaultValue": 0,
+    "description": "Максимальная глубина для обхода при рекурсивной обработке директории",
+    "nameEn": "maxDepth",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Количество файлов потребляемых за один опрос",
+    "descriptionEn": "To define a maximum messages to gather per poll. By default no maximum is set. Can be used to set a limit of e.g. 1000 to avoid when starting up the server that there are thousands of files. Set a value of 0 or negative to disabled it. Notice: If this option is in use then the File and FTP components will limit before any sorting. For example if you have 100000 files and use maxMessagesPerPoll=500, then only the first 500 files will be picked up, and then sorted. You can use the eagerMaxMessagesPerPoll option and set this to false to allow to scan all files first and then sort afterwards.",
+    "defaultValue": 0,
+    "description": "Определяет количество файлов потребляемых за один опрос. По умолчанию не установлено. Может использоваться, чтобы установить предел, и снизить нагрузку на сервер. Значение  0 или отрицательное отключает предел<br\/>Примечание: Если эта опция используется, то сортировка будет применяться к этому пределу, а не ко всем файлам. Например, если у вас есть 100000 файлов и вы используете maxMessagesPerPoll = 500, тогда будут отобраны только первые 500 файлов, а только затем отсортированы. Вы можете использовать параметр eagerMaxMessagesPerPoll и установить для него значение false, чтобы сначала можно было сканировать все файлы, а затем сортировать",
+    "nameEn": "maxMessagesPerPoll",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Минимальная глубина начала обработки при рекурсивном обработке директории",
+    "descriptionEn": "The minimum depth to start processing when recursively processing a directory. Using minDepth=1 means the base directory. Using minDepth=2 means the first sub directory.",
+    "defaultValue": 0,
+    "description": "Минимальная глубина, с которой начинается обработка при рекурсивном обработке директории. Использование minDepth=1 означает базовая директория. Использование minDepth=2 означает первый поддиректория, в базовой директории файлы обрабатываться не будут. Работает только при recursive=true",
+    "nameEn": "minDepth",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Имя директории\/файла после обработки",
+    "descriptionEn": "Expression (such as Simple Language) used to dynamically set the filename when moving it after processing. To move files into a .done subdirectory just enter .done.",
+    "defaultValue": ".camel",
+    "description": "Строка или выражение файлового или простого языка, используется для динамической установки имени файла при его перемещении после обработки. Например, при значении параметра temp файлы будут перемещены в директорию temp со своими именами, при значении temp\/${id} перемещены в temp и названы как их id, при temp\/${id}\/${file:name} каждый файл под своим именем будет перемещен в отдельную директорию под названием его id внутри директории temp",
+    "nameEn": "move",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Подключаемая блокировка чтения",
+    "descriptionEn": "Pluggable read-lock as a org.apache.camel.component.file.GenericFileExclusiveReadLockStrategy implementation.",
+    "defaultValue": null,
+    "description": "Подключаемая блокировка чтения как реализация org.apache.camel.component.file.GenericFileExclusiveReadLockStrategy.",
+    "nameEn": "exclusiveReadLockStrategy",
+    "type": "BEAN"
+  },
+  {
+    "acceptableValues": [
+      {
+        "label": "markerFile",
+        "value": "markerFile"
+      },
+      {
+        "label": "none",
+        "value": "none"
+      },
+      {
+        "label": "changed",
+        "value": "changed"
+      },
+      {
+        "label": "fileLock",
+        "value": "fileLock"
+      },
+      {
+        "label": "rename",
+        "value": "rename"
+      }
+    ],
+    "nameRu": "Блокировка файла",
+    "descriptionEn": "Used by consumer, to only poll the files if it has exclusive read-lock on the file (i.e. the file is not in-progress or being written). Camel will wait until the file lock is granted. This option provides the build in strategies: none - No read lock is in use markerFile - Camel creates a marker file (fileName.camelLock) and then holds a lock on it. This option is not available for the FTP component changed - Changed is using file length\/modification timestamp to detect whether the file is currently being copied or not. Will at least use 1 sec to determine this, so this option cannot consume files as fast as the others, but can be more reliable as the JDK IO API cannot always determine whether a file is currently being used by another process. The option readLockCheckInterval can be used to set the check frequency. fileLock - is for using java.nio.channels.FileLock. This option is not avail for Windows OS and the FTP component. This approach should be avoided when accessing a remote file system via a mount\/share unless that file system supports distributed file locks. rename - rename is for using a try to rename the file as a test if we can get exclusive read-lock. idempotent - (only for file component) idempotent is for using a idempotentRepository as the read-lock. This allows to use read locks that supports clustering if the idempotent repository implementation supports that. idempotent-changed - (only for file component) idempotent-changed is for using a idempotentRepository and changed as the combined read-lock. This allows to use read locks that supports clustering if the idempotent repository implementation supports that. idempotent-rename - (only for file component) idempotent-rename is for using a idempotentRepository and rename as the combined read-lock. This allows to use read locks that supports clustering if the idempotent repository implementation supports that. Notice: The various read locks is not all suited to work in clustered mode, where concurrent consumers on different nodes is competing for the same files on a shared file system. The markerFile using a close to atomic operation to create the empty marker file, but its not guaranteed to work in a cluster. The fileLock may work better but then the file system need to support distributed file locks, and so on. Using the idempotent read lock can support clustering if the idempotent repository supports clustering, such as Hazelcast Component or Infinispan.",
+    "defaultValue": null,
+    "description": "Брокер будет ждать перед обработкой, пока файл заблокирован.  Возможны следующие варианты: none - не использовать блокировку; markerFile - брокер создает файл - маркер fileName.camelLock, а затем удерживает блокировку на нем; changed - отслеживаются изменения размера файла и дата изменения файла. Если изменений нет, по крайней мере в течении 1 с, файл отправляется в обработку; fileLock - используется java.nio.channels.FileLock; rename - попробует переименовать файл в качестве теста, с целью определения наличия эксклюзивной блокировки чтения.",
+    "nameEn": "readLock",
+    "type": "SELECT"
+  },
+  {
+    "nameRu": "Интервал блокировки",
+    "descriptionEn": "Interval in millis for the read-lock, if supported by the read lock. This interval is used for sleeping between attempts to acquire the read lock. For example when using the changed read lock, you can set a higher interval period to cater for slow writes. The default of 1 sec. may be too fast if the producer is very slow writing the file. Notice: For FTP the default readLockCheckInterval is 5000. The readLockTimeout value must be higher than readLockCheckInterval, but a rule of thumb is to have a timeout that is at least 2 or more times higher than the readLockCheckInterval. This is needed to ensure that amble time is allowed for the read lock process to try to grab the lock before the timeout was hit.",
+    "defaultValue": 1000,
+    "description": "Интервал в миллисекундах для блокировки файлов. Этот интервал используется для ожидания между попытками получить блокировку. Значение readLockTimeout должно быть больше, чем readLockCheckInterval, по крайней мере, в 2 раза. Это необходимо, чтобы обеспечить достаточно времени для процесса блокировки чтения, чтобы попытаться захватить блокировку до истечения времени ожидания",
+    "nameEn": "readLockCheckInterval",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Удалять файлы блокировки чтения при запуске",
+    "descriptionEn": "Whether or not read lock with marker files should upon startup delete any orphan read lock files, which may have been left on the file system, if Camel was not properly shutdown (such as a JVM crash). If turning this option to false then any orphaned lock file will cause Camel to not attempt to pickup that file, this could also be due another node is concurrently reading files from the same shared directory.",
+    "defaultValue": true,
+    "description": "Должна ли блокировка чтения с файлами маркеров при запуске удалять любые файлы блокировки чтения, которые могли остаться в файловой системе, если Брокер не был корректно выключен (например, сбой JVM). Если для этой опции задано значение false, то любой потерянный файл блокировки приведет к тому, что Брокер не будет пытаться получить этот файл, это также может быть связано с тем, что другой узел одновременно читает файлы из того же общего каталога",
+    "nameEn": "readLockDeleteOrphanLockFiles",
+    "type": "BOOL"
+  },
+  {
+    "acceptableValues": [
+      {
+        "label": "ERROR",
+        "value": "ERROR"
+      },
+      {
+        "label": "WARN",
+        "value": "WARN"
+      },
+      {
+        "label": "INFO",
+        "value": "INFO"
+      },
+      {
+        "label": "DEBUG",
+        "value": "DEBUG"
+      },
+      {
+        "label": "TRACE",
+        "value": "TRACE"
+      },
+      {
+        "label": "OFF",
+        "value": "OFF"
+      }
+    ],
+    "nameRu": "Уровень логирования блокировки файлов",
+    "descriptionEn": "Logging level used when a read lock could not be acquired. By default a DEBUG is logged. You can change this level, for example to OFF to not have any logging. This option is only applicable for readLock of types: changed, fileLock, idempotent, idempotent-changed, idempotent-rename, rename.",
+    "defaultValue": 0,
+    "description": "Происходит запись в лог с определенным уровнем логирования, когда блокировка не может быть получена. По умолчанию,. Задается WARN. Вы можете изменить этот уровень, например, на OFF, чтобы отключить какое - либо протоколирования. Эта опция применима только для блокировки типов: changed, fileLock, rename.",
+    "nameEn": "readLockLoggingLevel",
+    "type": "SELECT"
+  },
+  {
+    "nameRu": "Использовать маркерный файл для блокировки",
+    "descriptionEn": "Whether to use marker file with the changed, rename, or exclusive read lock types. By default a marker file is used as well to guard against other processes picking up the same files. This behavior can be turned off by setting this option to false. For example if you do not want to write marker files to the file systems by the Camel application.",
+    "defaultValue": true,
+    "description": "Следует ли использовать маркерный файл для типов блокировки  changed,rename или exclusive. По умолчанию файл маркера используется также для защиты от других процессов, подбирающих одни и те же файлы",
+    "nameEn": "readLockMarkerFile",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Минимальный возраст файла",
+    "descriptionEn": "This option is applied only for readLock=changed. It allows to specify a minimum age the file must be before attempting to acquire the read lock. For example use readLockMinAge=300s to require the file is at last 5 minutes old. This can speedup the changed read lock as it will only attempt to acquire files which are at least that given age.",
+    "defaultValue": 0,
+    "description": "Этот параметр применяется только когда блокировка установлена на changed. Эта опция позволяет указать минимальный возраст файла, прежде чем пытаться получить блокировку. Например, можно использовать  300s для того чтобы потреблять файлы возрастом не менее 5 минут",
+    "nameEn": "readLockMinAge",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Минимальный размер файла блокировки",
+    "descriptionEn": "This option is applied only for readLock=changed. It allows you to configure a minimum file length. By default Camel expects the file to contain data, and thus the default value is 1. You can set this option to zero, to allow consuming zero-length files.",
+    "defaultValue": 1,
+    "description": "Этот параметр применяется только когда блокировка установлена на changed. Эта опция позволяет настроить минимальную длину файла. По умолчанию брокер ожидает, что файл содержит данные, и, таким образом, значение по умолчанию равно 1. Вы можете установить этот параметр в ноль, чтобы потреблять файлы нулевой длины.",
+    "nameEn": "readLockMinLength",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Удалять имя файла из идемпотентного репозитория при успешной обработке",
+    "descriptionEn": "This option is applied only for readLock=idempotent. It allows to specify whether to remove the file name entry from the idempotent repository when processing the file is succeeded and a commit happens. By default the file is not removed which ensures that any race-condition do not occur so another active node may attempt to grab the file. Instead the idempotent repository may support eviction strategies that you can configure to evict the file name entry after X minutes - this ensures no problems with race conditions. See more details at the readLockIdempotentReleaseDelay option.",
+    "defaultValue": false,
+    "description": "Эта опция применяется только для readLock = idempotent. Это позволяет указать, следует ли удалять запись имени файла из идемпотентного репозитория при успешной обработке файла и выполнении фиксации. По умолчанию файл не удаляется, что гарантирует отсутствие каких-либо условий гонки, поэтому другой активный узел может попытаться получить файл. Вместо этого идемпотентный репозиторий может поддерживать стратегии выселения, которые вы можете настроить, чтобы исключить запись имени файла через X минут - это гарантирует отсутствие проблем с условиями гонки. Подробности смотрите в опции readLockIdempotentReleaseDelay.",
+    "nameEn": "readLockRemoveOnCommit",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Удалять имя файла из идемпотентного репозитория при откате",
+    "descriptionEn": "This option is applied only for readLock=idempotent. It allows to specify whether to remove the file name entry from the idempotent repository when processing the file failed and a rollback happens. If this option is false, then the file name entry is confirmed (as if the file did a commit).",
+    "defaultValue": true,
+    "description": "Эта опция применяется только для readLock = idempotent. Это позволяет указать, следует ли удалять запись имени файла из идемпотентного хранилища, если обработка файла не удалась и произошел откат. Если этот параметр имеет значение false, то запись имени файла подтверждается (как если бы файл сделал коммит).",
+    "nameEn": "readLockRemoveOnRollback",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Время ожидания блокировки",
+    "descriptionEn": "Optional timeout in millis for the read-lock, if supported by the read-lock. If the read-lock could not be granted and the timeout triggered, then Camel will skip the file. At next poll Camel, will try the file again, and this time maybe the read-lock could be granted. Use a value of 0 or lower to indicate forever. Currently fileLock, changed and rename support the timeout. Notice: For FTP the default readLockTimeout value is 20000 instead of 10000. The readLockTimeout value must be higher than readLockCheckInterval, but a rule of thumb is to have a timeout that is at least 2 or more times higher than the readLockCheckInterval. This is needed to ensure that amble time is allowed for the read lock process to try to grab the lock before the timeout was hit.",
+    "defaultValue": 10000,
+    "description": "Время ожидания в миллисекундах для блокировки файла. Если блокировка не может быть предоставлена, то срабатывает тайм - аут, и брокер пропускает файл. В следующем опросе брокер, будет пытаться опросить файл снова",
+    "nameEn": "readLockTimeout",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Количество опросов ошибок до backoffMultipler",
+    "descriptionEn": "The number of subsequent error polls (failed due some error) that should happen before the backoffMultipler should kick-in.",
+    "defaultValue": null,
+    "description": "Количество последующих опросов ошибок (не выполненных из-за какой-либо ошибки), которые должны произойти до того, как должен сработать backoffMultipler",
+    "nameEn": "backoffErrorThreshold",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Число незанятых опросов до запуска backoffMultipler",
+    "descriptionEn": "The number of subsequent idle polls that should happen before the backoffMultipler should kick-in.",
+    "defaultValue": null,
+    "description": "Число последующих незанятых опросов, которые должны произойти до запуска backoffMultipler.",
+    "nameEn": "backoffIdleThreshold",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Позволить запланированному потребителю опроса отступить, если в строке было несколько последующих холостых ходов\/ошибок",
+    "descriptionEn": "To let the scheduled polling consumer backoff if there has been a number of subsequent idles\/errors in a row. The multiplier is then the number of polls that will be skipped before the next actual attempt is happening again. When this option is in use then backoffIdleThreshold and\/or backoffErrorThreshold must also be configured.",
+    "defaultValue": null,
+    "description": "Чтобы позволить запланированному потребителю опроса отступить, если в строке было несколько последующих холостых ходов\/ошибок. Тогда множитель - это число опросов, которые будут пропущены, прежде чем следующая фактическая попытка произойдет снова. Когда эта опция используется, то также должны быть настроены backoffIdleThreshold и \/ или backoffErrorThreshold.",
+    "nameEn": "backoffMultiplier",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Задержка",
+    "descriptionEn": "Milliseconds before the next poll. You can also specify time values using units, such as 60s (60 seconds), 5m30s (5 minutes and 30 seconds), and 1h (1 hour).",
+    "defaultValue": 500,
+    "description": "Задержка перед вторым и последующими опросами файла \/ директории в миллисекундах",
+    "nameEn": "delay",
+    "type": "INT"
+  },
+  {
+    "nameRu": "Жадный ScheduledPollConsumer",
+    "descriptionEn": "If greedy is enabled, then the ScheduledPollConsumer will run immediately again, if the previous run polled 1 or more messages.",
+    "defaultValue": false,
+    "description": "Если включена жадность, то ScheduledPollConsumer сразу же запустится снова, если предыдущий запуск опрашивал 1 или более сообщений",
+    "nameEn": "greedy",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Первоначальная задержка",
+    "descriptionEn": "Milliseconds before the first poll starts. You can also specify time values using units, such as 60s (60 seconds), 5m30s (5 minutes and 30 seconds), and 1h (1 hour).",
+    "defaultValue": 1000,
+    "description": "Задержка перед первым опросом файла \/ директории в миллисекундах",
+    "nameEn": "initialDelay",
+    "type": "INT"
+  },
+  {
+    "acceptableValues": [
+      {
+        "label": "ERROR",
+        "value": "ERROR"
+      },
+      {
+        "label": "WARN",
+        "value": "WARN"
+      },
+      {
+        "label": "INFO",
+        "value": "INFO"
+      },
+      {
+        "label": "DEBUG",
+        "value": "DEBUG"
+      },
+      {
+        "label": "TRACE",
+        "value": "TRACE"
+      },
+      {
+        "label": "OFF",
+        "value": "OFF"
+      }
+    ],
+    "nameRu": "Уровень протоколирования",
+    "descriptionEn": "The consumer logs a start\/complete log line when it polls. This option allows you to configure the logging level for that.",
+    "defaultValue": "WARN",
+    "description": "Точка входа может записывать протоколы работы в factor-ib.log. Этот параметр позволяет настроить уровень протоколирования",
+    "nameEn": "runLoggingLevel",
+    "type": "SELECT"
+  },
+  {
+    "nameRu": "Позволяет настроить пул потоков потребителя",
+    "descriptionEn": "Allows for configuring a custom\/shared thread pool to use for the consumer. By default each consumer has its own single threaded thread pool.",
+    "defaultValue": null,
+    "description": "Позволяет настроить пользовательский \/ общий пул потоков для использования потребителем. По умолчанию каждый потребитель имеет свой собственный пул однопоточных потоков",
+    "nameEn": "scheduledExecutorService",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Планировщик",
+    "descriptionEn": "To use a cron scheduler from either camel-spring or camel-quartz component",
+    "defaultValue": "none",
+    "description": "Использовать планировщик cron из camel-spring или camel-quartz",
+    "nameEn": "scheduler",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Свойства планировщика",
+    "descriptionEn": "To configure additional properties when using a custom scheduler or any of the Quartz, Spring based scheduler.",
+    "defaultValue": null,
+    "description": "Чтобы настроить дополнительные свойства при использовании пользовательского планировщика или любого из планировщиков на основе Quartz, Spring.",
+    "nameEn": "schedulerProperties",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Запустить планировщик автоматически",
+    "descriptionEn": "Whether the scheduler should be auto started.",
+    "defaultValue": true,
+    "description": "Должен ли планировщик быть запущен автоматически.",
+    "nameEn": "startScheduler",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Единицы времени",
+    "descriptionEn": "Time unit for initialDelay and delay options.",
+    "defaultValue": "MILLISECONDS",
+    "description": "Единицы времени для параметров initialDelay и delay",
+    "nameEn": "timeUnit",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Использовать фиксированную задержку",
+    "descriptionEn": "Controls if fixed delay or fixed rate is used. See ScheduledExecutorService in JDK for details.",
+    "defaultValue": true,
+    "description": "Используется ли Фиксированная задержка или фиксированная скорость опроса",
+    "nameEn": "useFixedDelay",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Случайный порядок",
+    "descriptionEn": "To shuffle the list of files (sort in random order)",
+    "defaultValue": false,
+    "description": "Для того, чтобы перетасовать список файлов до обработки (сортировка в случайном порядке). Сортировка по умолчанию отсутствует, порядок обработки задает ОС",
+    "nameEn": "shuffle",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Сортировка",
+    "descriptionEn": "Built-in sort by using the File Language. Supports nested sorts, so you can have a sort by file name and as a 2nd group sort by modified date.",
+    "defaultValue": null,
+    "description": "Встроенная сортировка с использованием простого или файлового языка выражений. Поддерживает вложенность, так что вы можете сортировать по имени файла и сортировать по дате модификации. Например, если значение file:modified;file:name , то сначала будет произведена сортировка по времени изменения, в первую очередь последние измененные файлы, а потом, если у файлов одинаковое время изменения, то сортировка по имени; при таком значении reverse:ignoreCase:file:name сортировка по имени в обратном порядке с игнорированием регистра",
+    "nameEn": "sortBy",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Сортировщик",
+    "descriptionEn": "Pluggable sorter as a java.util.Comparator class.",
+    "defaultValue": null,
+    "description": "Сменный сортировщик как класс java.util.Comparator.",
+    "nameEn": "sorter",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Аккаунт",
+    "descriptionEn": "Account to use for login",
+    "defaultValue": null,
+    "description": "Аккаунт для входа на удаленный FTP - сервер",
+    "nameEn": "account",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Отключить использование значений по умолчанию безопасной передачи данных",
+    "descriptionEn": "Use this option to disable default options when using secure data channel. This allows you to be in full control what the execPbsz and execProt setting should be used. Default is false",
+    "defaultValue": false,
+    "description": "Отключать или нет  использование значений по умолчанию execPbsz и \"Тип протокола FTPS\" при использовании безопасной передачи данных. Вы можете установить эту опцию в true если вы хотите полностью контролировать опции execPbsz и \"Тип протокола FTPS\".",
+    "nameEn": "disableSecureDataChannelDefaults",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Размер буфера защищенного канала передачи данных",
+    "descriptionEn": "When using secure data channel you can set the exec protection buffer size",
+    "defaultValue": null,
+    "description": "Этот параметр определяет размер буфера защищенного канала передачи данных. Если опция useSecureDataChannel включена, и эта опция не была установлена, то используется значение 0.",
+    "nameEn": "execPbsz",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Тип протокола FTPS",
+    "descriptionEn": "The exec protection level PROT command. C - Clear S - Safe(SSL protocol only) E - Confidential(SSL protocol only) P - Private",
+    "defaultValue": null,
+    "description": "По умолчанию использует P , если secure data channel по умолчанию не был отключен. Возможные значения: C: Clear, S: Safe(Протокол SSL), E: (Протокол SSL), Confidential P: Private",
+    "nameEn": "execProt",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Параметры хранилища ключей",
+    "descriptionEnTRANS": "Установите параметры хранилища ключей",
+    "descriptionEn": "Set the key store parameters",
+    "defaultValue": null,
+    "description": "Установите параметры хранилища ключей",
+    "nameEn": "ftpClientKeyStoreParameters",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Параметры хранилища доверия",
+    "descriptionEnTRANS": "Установите параметры хранилища доверия",
+    "descriptionEn": "Set the trust store parameters",
+    "defaultValue": null,
+    "description": "Установите параметры хранилища доверия",
+    "nameEn": "ftpClientTrustStoreParameters",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Неявный режим безопасности",
+    "descriptionEnTRANS": "Установите параметры хранилища доверия...",
+    "descriptionEn": "Set the security mode (Implicit\/Explicit). true - Implicit Mode \/ False - Explicit Mode",
+    "defaultValue": false,
+    "description": "Установите режим безопасности (неявный / явный). true - неявный режим / False - явный режим",
+    "nameEn": "implicit",
+    "type": "BOOL"
+  },
+  {
+    "nameRu": "Пароль",
+    "descriptionEn": "Password to use for login",
+    "defaultValue": null,
+    "description": "Задает пароль для использования в удаленной файловой системе.",
+    "nameEn": "password",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Протокол безопасности",
+    "descriptionEn": "Set the underlying security protocol.",
+    "defaultValue": "TLS",
+    "description": "Устанавливает протокол безопасности. Следующие значения определены: TLS: Transport Layer Security, SSL: Secure Sockets Layer",
+    "nameEn": "securityProtocol",
+    "type": "STRING"
+  },
+  {
+    "nameRu": "Ссылка на параметры SSL контекста",
+    "descriptionEn": "Gets the JSSE configuration that overrides any settings in FtpsEndpoint#\\ftpClientKeyStoreParameters, \\ftpClientTrustStoreParameters, and FtpsConfiguration#getSecurityProtocol().",
+    "defaultValue": null,
+    "description": "Ссылка на org.apache.camel.util.jsse.SSLContextParameters в реестре. Эта ссылка заменяет любые сконфигурированные параметры SSL на ftpClient, а также securityProtocol (SSL, TLS и т.д.) , установленный на FtpsConfiguration. См использование конфигурационной утилиты JSSE.",
+    "nameEn": "sslContextParameters",
+    "type": "BEAN"
+  },
+  {
+    "nameRu": "Имя пользователя",
+    "descriptionEn": "Username to use for login",
+    "defaultValue": null,
+    "description": "Задает имя пользователя, для использования в удаленной файловой системе. Если имя пользователя не задано, то будет предпринята анонимная попытка входа.",
+    "nameEn": "username",
+    "type": "STRING"
+  }
+]
