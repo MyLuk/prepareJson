@@ -25,6 +25,7 @@ public class Main {
         String pathFileIn2 = "C:\\Users\\wunsh\\Downloads\\project\\server\\fesb-manager\\web\\static\\src\\pages\\sops\\endpoint\\file\\properties\\InFTPSEndpointProperties.json";
         String pathFileOut = "C:\\Users\\wunsh\\Downloads\\project\\server\\fesb-manager\\web\\static\\src\\pages\\sops\\endpoint\\file\\properties\\OutFTPEndpointProperties.json";
         String pathFileOut2 = "C:\\Users\\wunsh\\Downloads\\project\\server\\fesb-manager\\web\\static\\src\\pages\\sops\\endpoint\\file\\properties\\OutFTPSEndpointProperties.json";
+        boolean blank = true;
         JSONParser parser = new JSONParser();
         JSONArray fileIn = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileIn), Charset.forName("UTF-8")));
         JSONArray fileIn2 = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileIn2), Charset.forName("UTF-8")));
@@ -33,7 +34,7 @@ public class Main {
         JSONArray fileArr, fileArr2;
         ChromeDriverManager.getInstance(DriverManagerType.CHROME).version("76.0.3809.126").setup();
         Configuration.startMaximized = true;
-        open("https://camel.apache.org/components/latest/ftps-component.html");
+        open("https://camel.apache.org/components/latest/ldap-component.html");
         ElementsCollection rows = $$x("//div[@class=\"sect2\"][2]//tbody/tr");
         JSONObject consumer = new JSONObject();
         JSONArray consumerArray = new JSONArray();
@@ -59,11 +60,11 @@ public class Main {
                 fileArr = fileOut;
                 fileArr2 = fileOut2;
             }
-            if (fileArr.stream().anyMatch(el -> ((JSONObject)el).get("nameEn").equals(nameEn))) {
+            if (!blank && fileArr.stream().anyMatch(el -> ((JSONObject)el).get("nameEn").equals(nameEn))) {
                 JSONObject object = (JSONObject) fileArr.stream().filter(el -> ((JSONObject)el).get("nameEn").equals(nameEn)).findAny().orElse(null);
                 putCur(current, object);
             } else {
-                if (fileArr2.stream().anyMatch(el -> ((JSONObject)el).get("nameEn").equals(nameEn))) {
+                if (!blank && fileArr2.stream().anyMatch(el -> ((JSONObject)el).get("nameEn").equals(nameEn))) {
                     JSONObject object = (JSONObject) fileArr2.stream().filter(el -> ((JSONObject) el).get("nameEn").equals(nameEn)).findAny().orElse(null);
                     putCur(current, object);
                 } else {
@@ -82,7 +83,7 @@ public class Main {
                         current.put("type", getType(data[2]));
                         $x("//textarea[@id='source']").clear();
                         $x("//textarea[@id='source']").sendKeys(data[1]);
-                        sleep(500);
+                        sleep(1000);
                         String text = $x("//span[@class='tlid-translation translation']").getText();
                         current.put("descriptionEnTRANS", text);
                         current.put("description", text);
