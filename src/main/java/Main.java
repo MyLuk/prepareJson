@@ -10,6 +10,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,15 +30,22 @@ public class Main {
         String pathFileOut2 = "C:\\Users\\wunsh\\Downloads\\project\\server\\fesb-manager\\web\\static\\src\\pages\\sops\\endpoint\\file\\properties\\OutFTPSEndpointProperties.json";
         boolean blank = true;
         JSONParser parser = new JSONParser();
-        JSONArray fileIn = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileIn), Charset.forName("UTF-8")));
-        JSONArray fileIn2 = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileIn2), Charset.forName("UTF-8")));
-        JSONArray fileOut = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileOut), Charset.forName("UTF-8")));
-        JSONArray fileOut2 = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileOut2), Charset.forName("UTF-8")));
-        JSONArray fileArr, fileArr2;
+        JSONArray fileIn = new JSONArray();
+        JSONArray fileIn2 = new JSONArray();
+        JSONArray fileOut = new JSONArray();
+        JSONArray fileOut2 = new JSONArray();
+        if (!blank) {
+             fileIn = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileIn), Charset.forName("UTF-8")));
+             fileIn2 = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileIn2), Charset.forName("UTF-8")));
+             fileOut = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileOut), Charset.forName("UTF-8")));
+             fileOut2 = (JSONArray) parser.parse(Files.newBufferedReader(Paths.get(pathFileOut2), Charset.forName("UTF-8")));
+        }
+        JSONArray fileArr = new JSONArray();
+        JSONArray fileArr2 = new JSONArray();
         ChromeDriverManager.getInstance(DriverManagerType.CHROME).version("76.0.3809.126").setup();
         Configuration.startMaximized = true;
-        open("https://camel.apache.org/components/latest/ldap-component.html");
-        ElementsCollection rows = $$x("//div[@class=\"sect2\"][2]//tbody/tr");
+        open("https://camel.apache.org/manual/latest/aggregate-eip.html");
+        ElementsCollection rows = $$x("//div[@class=\"sect1\"][1]//tbody/tr");
         JSONObject consumer = new JSONObject();
         JSONArray consumerArray = new JSONArray();
         JSONObject producer = new JSONObject();
@@ -47,16 +57,18 @@ public class Main {
         open("https://translate.google.com/?hl=ru#view=home&op=translate&sl=en&tl=ru");
         for (String element: strings) {
             JSONObject current = new JSONObject();
-            String[] data = element.split("\n") ;
-            String[] names = data[0].split(" ");
-            String nameEn = names.length==3 ? names[0]+names[1] : names[0];
-            if (nameEn.equals("separator")) {
-                System.out.println();
+            String[] data = element.split("\n");
+            List<String> names = new ArrayList<String>();
+            String[] namesAr = data[0].split(" ");
+            Collections.addAll(names, namesAr);
+            if (names.size() == 1) names.add("general");
+            String nameEn = names.size()==3 ? names.get(0)+names.get(1) : names.get(0);
+            if (!blank) {
+                fileArr = fileIn;
+                fileArr2 = fileIn2;
             }
-            fileArr = fileIn;
-            fileArr2 = fileIn2;
             current.put("nameEn", nameEn);
-            if (names[1].equals("(producer)")) {
+            if (!blank && names.get(1).equals("(producer)")) {
                 fileArr = fileOut;
                 fileArr2 = fileOut2;
             }
@@ -74,7 +86,7 @@ public class Main {
                         current.put("type", getType(data[3]));
                         $x("//textarea[@id='source']").clear();
                         $x("//textarea[@id='source']").sendKeys(data[1]);
-                        sleep(500);
+                        sleep(1500);
                         String text = $x("//span[@class='tlid-translation translation']").getText();
                         current.put("descriptionEnTRANS", text);
                         current.put("description", text);
@@ -92,8 +104,8 @@ public class Main {
             }
             current.put("descriptionEn", data[1]);
 
-            if (!names[1].equals("(consumer)")) producerArray.add(current);
-            if (!names[1].equals("(producer)")) consumerArray.add(current);
+            if (!names.get(1).equals("(consumer)")) producerArray.add(current);
+            if (!names.get(1).equals("(producer)")) consumerArray.add(current);
         }
 
         // Create a new FileWriter object
